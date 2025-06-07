@@ -23,6 +23,7 @@ export class WsService {
         { once: true }
       );
     }
+    this.socket.send(JSON.stringify(data));
   }
 
   listen(): Observable<any> {

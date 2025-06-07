@@ -13,6 +13,7 @@
     "server": "ts-node server/index.ts",
     "build:server": "tsc -p server/tsconfig.json",
     "start:server": "node dist/server/index.js"
+    "server": "ts-node server/index.ts"
   },
   "private": true,
   "dependencies": {
