@@ -6,6 +6,7 @@ import { filter } from 'rxjs/operators';
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private tokenKey = 'auth_token';
+  private emailKey = 'auth_email';
 
   constructor(private ws: WsService, private router: Router) {}
 
@@ -38,6 +39,16 @@ export class AuthService {
     this.router.navigateByUrl('/tabs/main');
   }
 
+  logout() {
+    const token = localStorage.getItem(this.tokenKey);
+    if (token) {
+      this.ws.send({ type: 'logout', token });
+    }
+    localStorage.removeItem(this.tokenKey);
+    localStorage.removeItem(this.emailKey);
+    this.router.navigateByUrl('/login');
+  }
+
   register(email: string, password: string) {
     this.ws.send({ type: 'register', email, password });
     return this.ws.listen().pipe(filter(m => m.type === 'register'));
@@ -45,5 +56,13 @@ export class AuthService {
 
   storeToken(token: string) {
     localStorage.setItem(this.tokenKey, token);
+  }
+
+  storeEmail(email: string) {
+    localStorage.setItem(this.emailKey, email);
+  }
+
+  getEmail(): string {
+    return localStorage.getItem(this.emailKey) || '';
   }
 }
