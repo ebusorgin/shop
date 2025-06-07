@@ -60,7 +60,7 @@ export class AuthController {
     return !!(res.rowCount && res.rowCount > 0);
   }
 
-  async handleMessage(ws: WebSocket, data: string) {
+  async handleMessage(ws: any, data: string) {
     try {
       const msg = JSON.parse(data);
       if (msg.type === 'login') {

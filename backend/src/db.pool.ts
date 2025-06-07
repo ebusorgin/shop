@@ -1,26 +1,31 @@
-import { Pool, PoolConfig, QueryResult } from 'pg';
+import pkg from 'pg';
 import dotenv from 'dotenv';
+
+const { Pool } = pkg;
 
 dotenv.config();
 
 export class Database {
-  private pool: Pool;
+  private pool: any;
+
 
   constructor() {
     this.pool = new Pool(this.getConfig());
   }
 
-  private getConfig(): PoolConfig {
+  private getConfig() {
+
     return {
       user: process.env.DB_USER,
       host: process.env.DB_HOST,
       database: process.env.DB_NAME,
       password: process.env.DB_PASSWORD,
       port: Number(process.env.DB_PORT) || 5432,
-    } as PoolConfig;
+    };
   }
 
-  async query<T = any>(queryText: string, params: any[] = []): Promise<QueryResult<T>> {
+  async query(queryText: string, params: any[] = []) {
+
     return this.pool.query(queryText, params);
   }
 
