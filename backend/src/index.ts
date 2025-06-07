@@ -1,4 +1,4 @@
-import { Database } from './db';
+import { Database } from './db.pool';
 import { AuthController } from './auth.controller';
 import { SocketServer } from './socket';
 
