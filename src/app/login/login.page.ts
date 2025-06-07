@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { AuthService } from '../services/auth.service';
+
 
 @Component({
   selector: 'app-login',
@@ -9,9 +11,16 @@ export class LoginPage {
   email = '';
   password = '';
 
-  constructor() {}
+
+  constructor(private auth: AuthService) {}
 
   login() {
-    console.log('Login', this.email, this.password);
+    this.auth.login(this.email, this.password).subscribe(res => {
+      if (res.success) {
+        this.auth.storeToken(res.token);
+        this.auth.navigateMain();
+      }
+    });
+
   }
 }

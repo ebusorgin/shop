@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { AuthService } from '../services/auth.service';
+
 
 @Component({
   selector: 'app-register',
@@ -10,9 +12,19 @@ export class RegisterPage {
   password = '';
   confirm = '';
 
-  constructor() {}
+  constructor(private auth: AuthService) {}
 
   register() {
-    console.log('Register', this.email, this.password, this.confirm);
+    if (this.password !== this.confirm) {
+      console.error('Passwords do not match');
+      return;
+    }
+    this.auth.register(this.email, this.password).subscribe(res => {
+      if (res.success) {
+        this.auth.storeToken(res.token);
+        this.auth.navigateMain();
+      }
+    });
+
   }
 }
