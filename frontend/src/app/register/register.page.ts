@@ -22,6 +22,7 @@ export class RegisterPage {
     this.auth.register(this.email, this.password).subscribe(res => {
       if (res.success) {
         this.auth.storeToken(res.token);
+        this.auth.storeEmail(this.email);
         this.auth.navigateMain();
       }
     });
