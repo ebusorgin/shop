@@ -60,6 +60,10 @@ export class AuthController {
     return !!(res.rowCount && res.rowCount > 0);
   }
 
+  async logout(token: string): Promise<void> {
+    await this.db.query('DELETE FROM tokens WHERE token=$1', [token]);
+  }
+
   async handleMessage(ws: any, data: string) {
     try {
       const msg = JSON.parse(data);
@@ -72,6 +76,9 @@ export class AuthController {
       } else if (msg.type === 'verify') {
         const valid = await this.verify(msg.token);
         ws.send(JSON.stringify({ type: 'verify', valid }));
+      } else if (msg.type === 'logout') {
+        await this.logout(msg.token);
+        ws.send(JSON.stringify({ type: 'logout', success: true }));
       }
     } catch (err) {
       ws.send(JSON.stringify({ type: 'error', message: 'Server error' }));
