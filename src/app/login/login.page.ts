@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { AuthService } from '../services/auth.service';
 
+
 @Component({
   selector: 'app-login',
   templateUrl: 'login.page.html',
@@ -9,6 +10,7 @@ import { AuthService } from '../services/auth.service';
 export class LoginPage {
   email = '';
   password = '';
+
 
   constructor(private auth: AuthService) {}
 
@@ -19,5 +21,6 @@ export class LoginPage {
         this.auth.navigateMain();
       }
     });
+
   }
 }
