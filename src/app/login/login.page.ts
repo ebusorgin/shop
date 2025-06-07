@@ -11,7 +11,6 @@ export class LoginPage {
   email = '';
   password = '';
 
-
   constructor(private auth: AuthService) {}
 
   login() {
@@ -21,6 +20,5 @@ export class LoginPage {
         this.auth.navigateMain();
       }
     });
-
   }
 }

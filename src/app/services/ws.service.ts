@@ -14,6 +14,15 @@ export class WsService {
   }
 
   send(data: any) {
+    if (this.socket.readyState === WebSocket.OPEN) {
+      this.socket.send(JSON.stringify(data));
+    } else {
+      this.socket.addEventListener(
+        'open',
+        () => this.socket.send(JSON.stringify(data)),
+        { once: true }
+      );
+    }
     this.socket.send(JSON.stringify(data));
   }
 
