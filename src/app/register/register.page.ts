@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { WsService } from '../services/ws.service';
 
 @Component({
   selector: 'app-register',
@@ -10,9 +11,17 @@ export class RegisterPage {
   password = '';
   confirm = '';
 
-  constructor() {}
+  constructor(private ws: WsService) {}
 
   register() {
-    console.log('Register', this.email, this.password, this.confirm);
+    if (this.password !== this.confirm) {
+      console.error('Passwords do not match');
+      return;
+    }
+    this.ws.send({
+      type: 'register',
+      email: this.email,
+      password: this.password
+    });
   }
 }

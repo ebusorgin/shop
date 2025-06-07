@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { WsService } from '../services/ws.service';
 
 @Component({
   selector: 'app-login',
@@ -9,9 +10,13 @@ export class LoginPage {
   email = '';
   password = '';
 
-  constructor() {}
+  constructor(private ws: WsService) {}
 
   login() {
-    console.log('Login', this.email, this.password);
+    this.ws.send({
+      type: 'login',
+      email: this.email,
+      password: this.password
+    });
   }
 }

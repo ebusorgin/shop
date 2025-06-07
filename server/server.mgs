@@ -1,0 +1,52 @@
+import { WebSocketServer, WebSocket } from 'ws';
+import { Client } from 'pg';
+
+const wss = new WebSocketServer({ port: 8080 });
+
+const db = new Client({
+  user: 'postgres',
+  password: 'postgres',
+  database: 'shop',
+  host: 'localhost',
+  port: 5432,
+});
+
+async function init() {
+  await db.connect();
+  await db.query(`
+    CREATE TABLE IF NOT EXISTS users (
+      id SERIAL PRIMARY KEY,
+      email TEXT UNIQUE NOT NULL,
+      password TEXT NOT NULL
+    );
+  `);
+  const res = await db.query('SELECT COUNT(*) FROM users WHERE email=$1', ['admin@example.com']);
+  if (res.rows[0].count === '0') {
+    await db.query('INSERT INTO users(email, password) VALUES($1, $2)', ['admin@example.com', 'admin']);
+  }
+}
+
+init();
+
+wss.on('connection', (ws: WebSocket) => {
+  ws.on('message', async (data: WebSocket.RawData) => {
+    try {
+      const msg = JSON.parse(data.toString());
+      if (msg.type === 'login') {
+        const { email, password } = msg;
+        const result = await db.query('SELECT * FROM users WHERE email=$1 AND password=$2', [email, password]);
+        ws.send(JSON.stringify({ type: 'login', success: result.rowCount > 0 }));
+      } else if (msg.type === 'register') {
+        const { email, password } = msg;
+        try {
+          await db.query('INSERT INTO users(email, password) VALUES($1, $2)', [email, password]);
+          ws.send(JSON.stringify({ type: 'register', success: true }));
+        } catch (err) {
+          ws.send(JSON.stringify({ type: 'register', success: false }));
+        }
+      }
+    } catch (err) {
+      ws.send(JSON.stringify({ type: 'error', message: 'Server error' }));
+    }
+  });
+});
