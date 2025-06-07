@@ -20,6 +20,7 @@ export class Database {
       host: process.env.DB_HOST,
       database: process.env.DB_NAME,
       password: process.env.DB_PASSWORD,
+      schema: process.env.DB_SCHEMA,
       port: Number(process.env.DB_PORT) || 5432,
     };
   }
@@ -35,7 +36,8 @@ export class Database {
   }
 
   private async createTables() {
-    await this.pool.query(`
+
+    const rr = await this.pool.query(`
       CREATE TABLE IF NOT EXISTS users (
         id SERIAL PRIMARY KEY,
         email TEXT UNIQUE NOT NULL,
