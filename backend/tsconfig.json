@@ -4,7 +4,8 @@
     "target": "es2017",
     "strict": true,
     "esModuleInterop": true,
-    "outDir": "../dist/server"
+    "skipLibCheck": true,
+    "outDir": "dist"
   },
-  "include": ["./**/*.ts"]
+  "include": ["src/**/*.ts"]
 }
