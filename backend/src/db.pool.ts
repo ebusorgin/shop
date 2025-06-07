@@ -8,11 +8,13 @@ dotenv.config();
 export class Database {
   private pool: any;
 
+
   constructor() {
     this.pool = new Pool(this.getConfig());
   }
 
   private getConfig() {
+
     return {
       user: process.env.DB_USER,
       host: process.env.DB_HOST,
@@ -23,6 +25,7 @@ export class Database {
   }
 
   async query(queryText: string, params: any[] = []) {
+
     return this.pool.query(queryText, params);
   }
 

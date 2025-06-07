@@ -1,5 +1,5 @@
 import { Database } from './db.pool';
-
+import { WebSocket } from 'ws';
 
 export class AuthController {
   constructor(private db: Database) {
