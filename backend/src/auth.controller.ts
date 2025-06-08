@@ -90,7 +90,7 @@ export class AuthController {
     const userId = await this.db.getUserIdByToken(token);
     if (!userId) return [];
     const res = await this.db.query(
-      'SELECT id, name, description, price FROM products WHERE user_id=$1',
+      'SELECT id, name, description, price, marketplace, profit FROM products WHERE user_id=$1',
       [userId]
     );
     return res.rows;
@@ -100,8 +100,8 @@ export class AuthController {
     const userId = await this.db.getUserIdByToken(token);
     if (!userId) return null;
     const res = await this.db.query(
-      'INSERT INTO products(user_id, name, description, price) VALUES ($1, $2, $3, $4) RETURNING id',
-      [userId, product.name, product.description, product.price]
+      'INSERT INTO products(user_id, name, description, price, marketplace, profit) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id',
+      [userId, product.name, product.description, product.price, product.marketplace, 0]
     );
     return res.rows[0].id;
   }
@@ -110,10 +110,20 @@ export class AuthController {
     const userId = await this.db.getUserIdByToken(token);
     if (!userId) return false;
     await this.db.query(
-      'UPDATE products SET name=$1, description=$2, price=$3 WHERE id=$4 AND user_id=$5',
-      [product.name, product.description, product.price, product.id, userId]
+      'UPDATE products SET name=$1, description=$2, price=$3, marketplace=$4 WHERE id=$5 AND user_id=$6',
+      [product.name, product.description, product.price, product.marketplace, product.id, userId]
     );
     return true;
+  }
+
+  async getDashboard(token: string) {
+    const userId = await this.db.getUserIdByToken(token);
+    if (!userId) return [];
+    const res = await this.db.query(
+      'SELECT marketplace, COUNT(*) AS count, COALESCE(SUM(profit),0) AS profit FROM products WHERE user_id=$1 GROUP BY marketplace',
+      [userId]
+    );
+    return res.rows;
   }
 
   async handleMessage(ws: any, data: string) {
@@ -146,6 +156,10 @@ export class AuthController {
       } else if (msg.type === 'updateProduct') {
         const success = await this.updateProduct(msg.token, msg.product);
         ws.send(JSON.stringify({ type: 'updateProduct', success }));
+      } else if (msg.type === 'getDashboard') {
+        const dashboard = await this.getDashboard(msg.token);
+        ws.send(JSON.stringify({ type: 'getDashboard', dashboard }));
+
       }
     } catch (err) {
       ws.send(JSON.stringify({ type: 'error', message: 'Server error' }));

@@ -14,25 +14,15 @@
   </ion-header>
 
   <ion-list>
-    <ion-item *ngFor="let p of products">
+    <ion-item *ngFor="let m of summary">
       <ion-label>
-        <h2>{{ p.name }}</h2>
-        <p>{{ p.description }}</p>
-        <p>{{ p.price | currency }}</p>
+        <h2>{{ m.marketplace }}</h2>
+        <p>Products: {{ m.count }}</p>
+        <p>Profit: {{ m.profit | currency }}</p>
       </ion-label>
-      <ion-button fill="clear" (click)="editProduct(p)">Edit</ion-button>
     </ion-item>
   </ion-list>
 
-  <ion-item>
-    <ion-input placeholder="Name" [(ngModel)]="newProduct.name"></ion-input>
-  </ion-item>
-  <ion-item>
-    <ion-input placeholder="Description" [(ngModel)]="newProduct.description"></ion-input>
-  </ion-item>
-  <ion-item>
-    <ion-input type="number" placeholder="Price" [(ngModel)]="newProduct.price"></ion-input>
-  </ion-item>
-  <ion-button expand="block" (click)="saveProduct()">Save Product</ion-button>
 
+  <ion-button expand="block" routerLink="/add-product">Add Product</ion-button>
 </ion-content>

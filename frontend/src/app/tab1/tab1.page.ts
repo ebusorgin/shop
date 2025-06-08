@@ -8,6 +8,7 @@ import { AuthService } from '../services/auth.service';
   styleUrls: ['tab1.page.scss']
 })
 export class Tab1Page {
+
   products: any[] = [];
   newProduct: any = { name: '', description: '', price: 0 };
 
@@ -40,4 +41,13 @@ export class Tab1Page {
     this.newProduct = { ...p };
   }
 
+  ionViewWillEnter() {
+    this.loadDashboard();
+  }
+
+  loadDashboard() {
+    this.productsService.dashboard(this.auth.getToken()).subscribe((m: any) => {
+      this.summary = m.dashboard;
+    });
+  }
 }

@@ -67,7 +67,9 @@ export class Database {
         user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
         name TEXT NOT NULL,
         description TEXT,
-        price NUMERIC(10,2) DEFAULT 0
+        price NUMERIC(10,2) DEFAULT 0,
+        marketplace TEXT,
+        profit NUMERIC(10,2) DEFAULT 0
       );
     `);
   }

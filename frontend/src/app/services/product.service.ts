@@ -20,4 +20,10 @@ export class ProductService {
     this.ws.send({ type: 'updateProduct', token, product });
     return this.ws.listen().pipe(filter(m => m.type === 'updateProduct'));
   }
+
+  dashboard(token: string) {
+    this.ws.send({ type: 'getDashboard', token });
+    return this.ws.listen().pipe(filter(m => m.type === 'getDashboard'));
+  }
+
 }
