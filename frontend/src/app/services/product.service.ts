@@ -25,4 +25,5 @@ export class ProductService {
     this.ws.send({ type: 'getDashboard', token });
     return this.ws.listen().pipe(filter(m => m.type === 'getDashboard'));
   }
+
 }

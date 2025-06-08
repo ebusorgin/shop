@@ -8,9 +8,38 @@ import { AuthService } from '../services/auth.service';
   styleUrls: ['tab1.page.scss']
 })
 export class Tab1Page {
-  summary: any[] = [];
+
+  products: any[] = [];
+  newProduct: any = { name: '', description: '', price: 0 };
 
   constructor(private productsService: ProductService, private auth: AuthService) {}
+
+  ionViewWillEnter() {
+    this.loadProducts();
+  }
+
+  loadProducts() {
+    this.productsService.list(this.auth.getToken()).subscribe((m: any) => {
+      this.products = m.products;
+    });
+  }
+
+  saveProduct() {
+    if (this.newProduct.id) {
+      this.productsService
+        .update(this.auth.getToken(), this.newProduct)
+        .subscribe(() => this.loadProducts());
+    } else {
+      this.productsService
+        .add(this.auth.getToken(), this.newProduct)
+        .subscribe(() => this.loadProducts());
+    }
+    this.newProduct = { name: '', description: '', price: 0 };
+  }
+
+  editProduct(p: any) {
+    this.newProduct = { ...p };
+  }
 
   ionViewWillEnter() {
     this.loadDashboard();
