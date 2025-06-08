@@ -1,0 +1,25 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>New Product</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-item>
+    <ion-input placeholder="Name" [(ngModel)]="product.name"></ion-input>
+  </ion-item>
+  <ion-item>
+    <ion-input placeholder="Description" [(ngModel)]="product.description"></ion-input>
+  </ion-item>
+  <ion-item>
+    <ion-input type="number" placeholder="Price" [(ngModel)]="product.price"></ion-input>
+  </ion-item>
+  <ion-item>
+    <ion-select placeholder="Marketplace" [(ngModel)]="product.marketplace">
+      <ion-select-option value="wildberries">Wildberries</ion-select-option>
+      <ion-select-option value="ozon">Ozon</ion-select-option>
+      <ion-select-option value="yandex">Yandex</ion-select-option>
+    </ion-select>
+  </ion-item>
+  <ion-button expand="block" (click)="save()">Save</ion-button>
+</ion-content>

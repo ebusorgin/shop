@@ -53,6 +53,33 @@ export class Database {
         created_at TIMESTAMPTZ DEFAULT NOW()
       );
     `);
+
+    await this.pool.query(`
+      CREATE TABLE IF NOT EXISTS profiles (
+        user_id INTEGER PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
+        display_name TEXT
+      );
+    `);
+
+    await this.pool.query(`
+      CREATE TABLE IF NOT EXISTS products (
+        id SERIAL PRIMARY KEY,
+        user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+        name TEXT NOT NULL,
+        description TEXT,
+        price NUMERIC(10,2) DEFAULT 0,
+        marketplace TEXT,
+        profit NUMERIC(10,2) DEFAULT 0
+      );
+    `);
+  }
+
+  async getUserIdByToken(token: string): Promise<number | null> {
+    const res = await this.pool.query('SELECT user_id FROM tokens WHERE token=$1', [token]);
+    if (res.rowCount && res.rowCount > 0) {
+      return res.rows[0].user_id;
+    }
+    return null;
   }
 
 }
