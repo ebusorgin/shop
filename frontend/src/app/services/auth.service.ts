@@ -65,4 +65,20 @@ export class AuthService {
   getEmail(): string {
     return localStorage.getItem(this.emailKey) || '';
   }
+
+  getToken(): string {
+    return localStorage.getItem(this.tokenKey) || '';
+  }
+
+  getProfile() {
+    const token = this.getToken();
+    this.ws.send({ type: 'getProfile', token });
+    return this.ws.listen().pipe(filter(m => m.type === 'getProfile'));
+  }
+
+  updateProfile(displayName: string) {
+    const token = this.getToken();
+    this.ws.send({ type: 'updateProfile', token, displayName });
+    return this.ws.listen().pipe(filter(m => m.type === 'updateProfile'));
+  }
 }

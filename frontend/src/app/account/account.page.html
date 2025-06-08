@@ -7,10 +7,11 @@
 <ion-content class="ion-padding">
   <ion-list>
     <ion-item>
-      <ion-label>
-        <h2>{{ auth.getEmail() || 'Account' }}</h2>
-        <p>Your account settings</p>
-      </ion-label>
+      <ion-label position="floating">Display Name</ion-label>
+      <ion-input [(ngModel)]="displayName"></ion-input>
+    </ion-item>
+    <ion-item lines="none">
+      <ion-button expand="block" (click)="saveProfile()">Save Profile</ion-button>
     </ion-item>
     <ion-item button (click)="logout()">
       <ion-label color="danger">Logout</ion-label>

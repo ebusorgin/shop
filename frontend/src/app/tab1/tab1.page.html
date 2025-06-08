@@ -13,6 +13,15 @@
     </ion-toolbar>
   </ion-header>
 
-  <app-explore-container name="Home page"></app-explore-container>
+  <ion-list>
+    <ion-item *ngFor="let m of summary">
+      <ion-label>
+        <h2>{{ m.marketplace }}</h2>
+        <p>Products: {{ m.count }}</p>
+        <p>Profit: {{ m.profit | currency }}</p>
+      </ion-label>
+    </ion-item>
+  </ion-list>
 
+  <ion-button expand="block" routerLink="/add-product">Add Product</ion-button>
 </ion-content>
