@@ -23,6 +23,35 @@
     </ion-item>
   </ion-list>
 
+  <ion-list>
+    <ion-item *ngFor="let p of products">
+      <ion-label>
+        <h2>{{ p.name }}</h2>
+        <p>{{ p.description }}</p>
+        <p>{{ p.price | currency }}</p>
+        <p>{{ p.marketplace }}</p>
+      </ion-label>
+      <ion-button fill="clear" (click)="editProduct(p)">Edit</ion-button>
+    </ion-item>
+  </ion-list>
 
-  <ion-button expand="block" routerLink="/add-product">Add Product</ion-button>
+  <ion-item>
+    <ion-input placeholder="Name" [(ngModel)]="newProduct.name"></ion-input>
+  </ion-item>
+  <ion-item>
+    <ion-input placeholder="Description" [(ngModel)]="newProduct.description"></ion-input>
+  </ion-item>
+  <ion-item>
+    <ion-input type="number" placeholder="Price" [(ngModel)]="newProduct.price"></ion-input>
+  </ion-item>
+  <ion-item>
+    <ion-select placeholder="Marketplace" [(ngModel)]="newProduct.marketplace">
+      <ion-select-option value="wildberries">Wildberries</ion-select-option>
+      <ion-select-option value="ozon">Ozon</ion-select-option>
+      <ion-select-option value="yandex">Yandex</ion-select-option>
+    </ion-select>
+  </ion-item>
+  <ion-button expand="block" (click)="saveProduct()">Save Product</ion-button>
+  <ion-button expand="block" (click)="goAddProduct()">Add Product</ion-button>
+
 </ion-content>

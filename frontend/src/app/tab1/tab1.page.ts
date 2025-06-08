@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
+
 import { ProductService } from '../services/product.service';
 import { AuthService } from '../services/auth.service';
 
@@ -8,14 +10,20 @@ import { AuthService } from '../services/auth.service';
   styleUrls: ['tab1.page.scss']
 })
 export class Tab1Page {
-
   products: any[] = [];
-  newProduct: any = { name: '', description: '', price: 0 };
+  summary: any[] = [];
+  newProduct: any = { name: '', description: '', price: 0, marketplace: '' };
 
-  constructor(private productsService: ProductService, private auth: AuthService) {}
+  constructor(
+    private productsService: ProductService,
+    private auth: AuthService,
+    private router: Router
+  ) {}
 
   ionViewWillEnter() {
     this.loadProducts();
+    this.loadDashboard();
+
   }
 
   loadProducts() {
@@ -24,30 +32,37 @@ export class Tab1Page {
     });
   }
 
+  loadDashboard() {
+    this.productsService.dashboard(this.auth.getToken()).subscribe((m: any) => {
+      this.summary = m.dashboard;
+    });
+  }
+
   saveProduct() {
     if (this.newProduct.id) {
       this.productsService
         .update(this.auth.getToken(), this.newProduct)
-        .subscribe(() => this.loadProducts());
+        .subscribe(() => this.reloadAll());
     } else {
       this.productsService
         .add(this.auth.getToken(), this.newProduct)
-        .subscribe(() => this.loadProducts());
+        .subscribe(() => this.reloadAll());
     }
-    this.newProduct = { name: '', description: '', price: 0 };
+    this.newProduct = { name: '', description: '', price: 0, marketplace: '' };
+  }
+
+  reloadAll() {
+    this.loadProducts();
+    this.loadDashboard();
+
   }
 
   editProduct(p: any) {
     this.newProduct = { ...p };
   }
 
-  ionViewWillEnter() {
-    this.loadDashboard();
-  }
+  goAddProduct() {
+    this.router.navigateByUrl('/add-product');
 
-  loadDashboard() {
-    this.productsService.dashboard(this.auth.getToken()).subscribe((m: any) => {
-      this.summary = m.dashboard;
-    });
   }
 }
