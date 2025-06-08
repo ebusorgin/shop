@@ -64,6 +64,58 @@ export class AuthController {
     await this.db.query('DELETE FROM tokens WHERE token=$1', [token]);
   }
 
+  async getProfile(token: string) {
+    const userId = await this.db.getUserIdByToken(token);
+    if (!userId) return null;
+    const res = await this.db.query(
+      'SELECT display_name FROM profiles WHERE user_id=$1',
+      [userId]
+    );
+    return res.rowCount ? res.rows[0] : { display_name: '' };
+  }
+
+  async updateProfile(token: string, displayName: string) {
+    const userId = await this.db.getUserIdByToken(token);
+    if (!userId) return false;
+    await this.db.query(
+      `INSERT INTO profiles(user_id, display_name)
+       VALUES ($1, $2)
+       ON CONFLICT (user_id) DO UPDATE SET display_name=excluded.display_name`,
+      [userId, displayName]
+    );
+    return true;
+  }
+
+  async listProducts(token: string) {
+    const userId = await this.db.getUserIdByToken(token);
+    if (!userId) return [];
+    const res = await this.db.query(
+      'SELECT id, name, description, price FROM products WHERE user_id=$1',
+      [userId]
+    );
+    return res.rows;
+  }
+
+  async addProduct(token: string, product: any) {
+    const userId = await this.db.getUserIdByToken(token);
+    if (!userId) return null;
+    const res = await this.db.query(
+      'INSERT INTO products(user_id, name, description, price) VALUES ($1, $2, $3, $4) RETURNING id',
+      [userId, product.name, product.description, product.price]
+    );
+    return res.rows[0].id;
+  }
+
+  async updateProduct(token: string, product: any) {
+    const userId = await this.db.getUserIdByToken(token);
+    if (!userId) return false;
+    await this.db.query(
+      'UPDATE products SET name=$1, description=$2, price=$3 WHERE id=$4 AND user_id=$5',
+      [product.name, product.description, product.price, product.id, userId]
+    );
+    return true;
+  }
+
   async handleMessage(ws: any, data: string) {
     try {
       const msg = JSON.parse(data);
@@ -79,6 +131,21 @@ export class AuthController {
       } else if (msg.type === 'logout') {
         await this.logout(msg.token);
         ws.send(JSON.stringify({ type: 'logout', success: true }));
+      } else if (msg.type === 'getProfile') {
+        const profile = await this.getProfile(msg.token);
+        ws.send(JSON.stringify({ type: 'getProfile', profile }));
+      } else if (msg.type === 'updateProfile') {
+        const success = await this.updateProfile(msg.token, msg.displayName);
+        ws.send(JSON.stringify({ type: 'updateProfile', success }));
+      } else if (msg.type === 'listProducts') {
+        const products = await this.listProducts(msg.token);
+        ws.send(JSON.stringify({ type: 'listProducts', products }));
+      } else if (msg.type === 'addProduct') {
+        const id = await this.addProduct(msg.token, msg.product);
+        ws.send(JSON.stringify({ type: 'addProduct', id }));
+      } else if (msg.type === 'updateProduct') {
+        const success = await this.updateProduct(msg.token, msg.product);
+        ws.send(JSON.stringify({ type: 'updateProduct', success }));
       }
     } catch (err) {
       ws.send(JSON.stringify({ type: 'error', message: 'Server error' }));

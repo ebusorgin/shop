@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { ProductService } from '../services/product.service';
+import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-tab3',
@@ -6,7 +8,14 @@ import { Component } from '@angular/core';
   styleUrls: ['tab3.page.scss']
 })
 export class Tab3Page {
+  count = 0;
 
-  constructor() {}
+  constructor(private productsService: ProductService, private auth: AuthService) {}
+
+  ionViewWillEnter() {
+    this.productsService.list(this.auth.getToken()).subscribe((m: any) => {
+      this.count = m.products.length;
+    });
+  }
 
 }
