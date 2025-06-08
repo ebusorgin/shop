@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
+
 import { ProductService } from '../services/product.service';
 import { AuthService } from '../services/auth.service';
 
@@ -22,6 +23,7 @@ export class Tab1Page {
   ionViewWillEnter() {
     this.loadProducts();
     this.loadDashboard();
+
   }
 
   loadProducts() {
@@ -52,6 +54,7 @@ export class Tab1Page {
   reloadAll() {
     this.loadProducts();
     this.loadDashboard();
+
   }
 
   editProduct(p: any) {
@@ -60,5 +63,6 @@ export class Tab1Page {
 
   goAddProduct() {
     this.router.navigateByUrl('/add-product');
+
   }
 }

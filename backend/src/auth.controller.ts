@@ -159,6 +159,7 @@ export class AuthController {
       } else if (msg.type === 'getDashboard') {
         const dashboard = await this.getDashboard(msg.token);
         ws.send(JSON.stringify({ type: 'getDashboard', dashboard }));
+
       }
     } catch (err) {
       ws.send(JSON.stringify({ type: 'error', message: 'Server error' }));
