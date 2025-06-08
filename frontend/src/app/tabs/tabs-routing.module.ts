@@ -20,10 +20,6 @@ const routes: Routes = [
         loadChildren: () => import('../tab3/tab3.module').then(m => m.Tab3PageModule)
       },
       {
-        path: 'sales',
-        loadChildren: () => import('../sales/sales.module').then(m => m.SalesPageModule)
-      },
-      {
         path: 'account',
         loadChildren: () => import('../account/account.module').then(m => m.AccountPageModule)
       },
