@@ -12,7 +12,6 @@ import { AuthService } from '../services/auth.service';
 export class Tab1Page {
   products: any[] = [];
   summary: any[] = [];
-  newProduct: any = { name: '', description: '', price: 0, marketplace: '' };
 
   constructor(
     private productsService: ProductService,
@@ -36,29 +35,6 @@ export class Tab1Page {
     this.productsService.dashboard(this.auth.getToken()).subscribe((m: any) => {
       this.summary = m.dashboard;
     });
-  }
-
-  saveProduct() {
-    if (this.newProduct.id) {
-      this.productsService
-        .update(this.auth.getToken(), this.newProduct)
-        .subscribe(() => this.reloadAll());
-    } else {
-      this.productsService
-        .add(this.auth.getToken(), this.newProduct)
-        .subscribe(() => this.reloadAll());
-    }
-    this.newProduct = { name: '', description: '', price: 0, marketplace: '' };
-  }
-
-  reloadAll() {
-    this.loadProducts();
-    this.loadDashboard();
-
-  }
-
-  editProduct(p: any) {
-    this.newProduct = { ...p };
   }
 
   goAddProduct() {
